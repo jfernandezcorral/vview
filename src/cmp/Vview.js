@@ -1,47 +1,88 @@
 import React, {Children} from 'react'
 import PropTypes from 'prop-types'
-export class Vview extends React.Component {
+const Offset = 10
+export class Vview extends React.PureComponent {
 	constructor(props) {
-    	super(props)
-    	//this.handleScroll = this.handleScroll.bind(this)
-  	}
+        super(props)
+         this.state = {
+            alto: 0,
+            count: Children.count(this.props.children),
+            scroll: 0
+        }
+        this._render = this._render.bind(this)
+    	this.handleScroll = this.handleScroll.bind(this)
+    }
+    componentWillReceiveProps(nextProps){
+        const count = Children.count(nextProps.children)
+        const heightTotal = count*nextProps.height
+        let scroll = this.state.scroll
+        if (scroll > heightTotal){
+            scroll = heightTotal
+        }
+        this.setState({count, scroll})
+    }
+    _render(){
+        const {children, height} = this.props
+        const {alto} = this.state
+        const heightTotal = this.state.count*height
+        let antes = undefined
+        let despues= undefined
+        let view = undefined
+        if (this.state.scroll > (Offset*height)){
+            const tmp = (this.state.scroll - Offset*height)/height
+            const tmp2 = tmp + (alto+(2*Offset*height))/height
+            antes = <div  key='antes' style={{height: String(this.state.scroll - Offset*height) + 'px'}}/>
+            view = Children.toArray(children).slice(tmp, tmp2)
+            this.state.count > tmp2 && (despues = <div key='despues' style={{height: String(heightTotal - alto - this.state.scroll - Offset*2*height) + 'px'}}/>)
+        }
+        else{
+            view = Children.toArray(children).slice(0,(alto + Offset*height)/height)
+            despues = <div key='despues' style={{height: String(heightTotal - alto - Offset*height) + 'px'}}/>
+        }
+        return [antes, view, despues]
+    }  
   	render() {
-    	const {children} = this.props
+        if (this.state.count < 150){
+            return(
+                <div className={this.props.className} ref={s=>this.panel=s}>
+                 {this.props.children}
+    		    </div>
+            )
+        }
     	return (
-    		<div>
-    			hola
+    		<div className={this.props.className} ref={s=>this.panel=s}>
+                {this.state.alto > 0 && this._render()}
     		</div>
     	)
   	}
-  	/*componentDidMount(){
-  		this.scroll = this.refs.s
-  		this.panel = this.scroll.firstChild
-  		this.scroll.addEventListener('scroll', this.handleScroll)
+  	componentDidMount(){
+        this.panel.addEventListener('scroll', this.handleScroll)
+        this.setState({alto: this.panel.offsetHeight})
   	}
   	componentWillUnmount() {
-    	this.scroll.removeEventListener('scroll', this.handleScroll)
+    	this.panel.removeEventListener('scroll', this.handleScroll)
   	}
   	handleScroll() {
-  		if (this.panel.offsetHeight - this.scroll.offsetHeight <= this.scroll.scrollTop + 2){
-  			if (Math.abs(this.anteriorTop-this.scroll.scrollTop)<4){
-	  			return
-	  		}
-	  		this.props.onTop(this.scroll.scrollTop)
-        this.anteriorTop = this.scroll.scrollTop
-  		}
-      this.anteriorTop = this.scroll.scrollTop<this.anteriorTop?this.scroll.scrollTop: this.anteriorTop
-  	}*/
+        const heightTotal = this.state.count*this.props.height
+        if (this.state.count < 150){
+            return
+        }
+        /*if (this.panel.scrollTop >= heightTotal-this.state.alto){
+            this.setState({scroll: this.panel.scrollTop})
+        }*/
+        else if (Math.abs(this.panel.scrollTop-this.state.scroll) > (this.props.height*Offset - 30)){
+            this.setState({scroll: this.panel.scrollTop})
+        }
+  	}
 }
 
 Vview.propTypes = {
+    height: PropTypes.number
  	//estilo: PropTypes.object,
  	//children: PropTypes.element.isRequired,
  	//onTop: PropTypes.func.isRequired
 }
 
 Vview.defaultProps = {
-    estilo: {
-    	overflowY: 	'auto',
-    	height: 	"100%", 
-    }
+    height: 16,
 }
