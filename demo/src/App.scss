@@ -12,12 +12,17 @@
     >div:nth-child(2){
         height: 1px;
         flex-grow: 1;
-        background-color: green;
+        background-color: rgb(91, 94, 91);
+        color: white;
     }
 }
 .view{
     overflow-y: scroll;
     .registro{
+        padding: 2px;
+        margin: 1px;
+        border: 1px solid #6e6d6d;
+        border-radius: 2px;
         display: flex;
         >div{
             width: 20%;

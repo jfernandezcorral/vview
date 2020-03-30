@@ -36,7 +36,7 @@ export default class App extends React.Component {
         }
     	return (
     		<div className={cx('app')}>
-    			<div>generar: <input type='text' value={String(this.state.numero)} onChange={this.change}/> registros <button>v</button> ordenar aleatoriamente <button>^</button></div>
+    			<div>generar: <input type='text' value={String(this.state.numero)} onChange={this.change}/> registros</div>
                 <Vview className={cx('view')}>
                     {buf}
                 </Vview>
