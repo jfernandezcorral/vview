@@ -16,7 +16,7 @@ export default class App extends React.Component {
         this.change = this.change.bind(this)
     }
     change(e){
-        const n = parseInt(e.target.value)||10000
+        const n = parseInt(e.target.value)||0
         this.setState({numero: n})
     }
     registro(i){
