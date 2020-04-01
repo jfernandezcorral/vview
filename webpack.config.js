@@ -65,7 +65,7 @@ module.exports = (env, argv) => {
     config.output.filename = 'index.js';
   }
   else{
-    config.plugins.push(new CleanWebpackPlugin(['lib']))
+    //config.plugins.push(new CleanWebpackPlugin(['lib']))
   }
   return config;
 };

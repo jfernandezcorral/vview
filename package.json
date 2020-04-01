@@ -2,7 +2,7 @@
   "name": "vview",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.min.js",
   "scripts": {
     "build-prod": "webpack --mode=production --config webpack.config.js",
     "build-dev": "webpack --mode=development --config webpack.config.js",
